@@ -14,5 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    //(new \App\Jobs\SendEmail())->handle();
+     \App\Jobs\SendEmail::dispatch();
     return view('welcome');
 });
