@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     //(new \App\Jobs\SendEmail())->handle();
-     \App\Jobs\SendEmail::dispatch();
+    foreach (range(1, 100) as $i){
+        \App\Jobs\SendEmail::dispatch();
+    }
+    \App\Jobs\ProcessPayment::dispatch()->onQueue('payments');
+
     return view('welcome');
 });

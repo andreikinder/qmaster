@@ -13,11 +13,6 @@ class SendEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $timeout  = 1;
-
-    public $tries = -1;
-
-    public $backoff = 3;
 
     /**
      * Create a new job instance.
@@ -38,15 +33,12 @@ class SendEmail implements ShouldQueue
     {
         //
 
-        throw new \Exception('Faliled!');
+
         info('start !');
         sleep(2);
         info('end !');
 
     }
 
-    public function retryUntil()
-    {
-        return now()->addMinute();
-    }
+
 }
