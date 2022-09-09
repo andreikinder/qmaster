@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,6 +16,24 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
 
-    \App\Jobs\SendEmail::dispatch();
+//    $chain = [
+//        new \App\Jobs\PullRepo(),
+//        new \App\Jobs\RunTests(),
+//        new \App\Jobs\Deploy()
+//    ];
+//
+//    Bus::chain($chain)->dispatch();
+
+    $batch = [
+        new \App\Jobs\PullRepo('project1'),
+        new \App\Jobs\PullRepo('project2'),
+        new \App\Jobs\PullRepo('project3'),
+    ];
+
+    Bus::batch($batch)
+        ->allowFailures()
+        ->dispatch();
+    //\App\Jobs\SendEmail::dispatch();
+
     return view('welcome');
 });
