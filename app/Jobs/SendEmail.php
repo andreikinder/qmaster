@@ -14,6 +14,12 @@ class SendEmail implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 
+    public $tries = 10;
+
+    public $maxExceptions = 2;
+
+
+
     /**
      * Create a new job instance.
      *
@@ -32,12 +38,14 @@ class SendEmail implements ShouldQueue
     public function handle()
     {
         //
-
-
-        info('start !');
+        throw  new \Exception('failed');
         sleep(2);
-        info('end !');
+        return $this->release(2);
+    }
 
+    public function failed($e)
+    {
+        info('failed');
     }
 
 
