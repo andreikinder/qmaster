@@ -16,18 +16,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
 
-//    $chain = [
-//        new \App\Jobs\PullRepo(),
-//        new \App\Jobs\RunTests(),
-//        new \App\Jobs\Deploy()
-//    ];
-//
-//    Bus::chain($chain)->dispatch();
 
     $batch = [
-        new \App\Jobs\PullRepo('project1'),
-        new \App\Jobs\PullRepo('project2'),
-        new \App\Jobs\PullRepo('project3'),
+        [
+            new \App\Jobs\PullRepo('project1'),
+            new \App\Jobs\RunTests('project1'),
+            new \App\Jobs\Deploy('project1'),
+        ],
+        [
+            new \App\Jobs\PullRepo('project2'),
+            new \App\Jobs\RunTests('project2'),
+            new \App\Jobs\Deploy('project2'),
+        ]
+
+
     ];
 
     Bus::batch($batch)
