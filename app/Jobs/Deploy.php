@@ -6,9 +6,11 @@ use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Redis;
 
 class Deploy implements ShouldQueue
 {
@@ -31,6 +33,25 @@ class Deploy implements ShouldQueue
      */
     public function handle()
     {
-        //
+        Redis::throttle('deployments' )
+            ->allow(10)
+            ->every(60)
+            ->block(10)
+            ->then(function (){
+                info('Started Deploying ...');
+
+                sleep(2);
+
+                info('Finished Deploying');
+            });
+//        Cache::lock('deployments')->block( 10, function (){
+//            info('Started Deploying ...');
+//
+//            sleep(5);
+//
+//            info('Finished Deploying');
+//            }
+//        );
+
     }
 }
