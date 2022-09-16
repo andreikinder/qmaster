@@ -6,6 +6,7 @@ use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -52,6 +53,14 @@ class Deploy implements ShouldQueue
 //            info('Finished Deploying');
 //            }
 //        );
+
+
+    }
+    public function middleware(){
+
+        return [
+          new WithoutOverlapping('deployments', 10)
+        ];
 
     }
 }
