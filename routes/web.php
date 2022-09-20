@@ -37,7 +37,15 @@ Route::get('/', function () {
 //        ->dispatch();
     //\App\Jobs\SendEmail::dispatch();
 
-    \App\Jobs\Deploy::dispatch();
+    //\App\Jobs\Deploy::dispatch();
+
+
+    \Illuminate\Support\Facades\DB::transaction(function (){
+
+        $user = \App\Models\User::create(['email' =>  'test@gmai.com']);
+
+        \App\Jobs\SendEmail::dispatch($user)->afterCommit();
+    });
 
     return view('welcome');
 });

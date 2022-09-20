@@ -44,6 +44,7 @@ class Deploy implements ShouldQueue
         info('Finished Deploying');
 
 
+    }
 
     public function middleware(){
 
