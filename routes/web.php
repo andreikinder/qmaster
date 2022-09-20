@@ -40,12 +40,7 @@ Route::get('/', function () {
     //\App\Jobs\Deploy::dispatch();
 
 
-    \Illuminate\Support\Facades\DB::transaction(function (){
-
-        $user = \App\Models\User::create(['email' =>  'test@gmai.com']);
-
-        \App\Jobs\SendEmail::dispatch($user)->afterCommit();
-    });
+    \App\Jobs\TestJob::dispatch('THIS_IS_THE_SECRET');
 
     return view('welcome');
 });
