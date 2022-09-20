@@ -5,6 +5,7 @@ namespace App\Jobs;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Cache;
@@ -13,7 +14,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Redis;
 
-class Deploy implements ShouldQueue
+class Deploy implements ShouldQueue, ShouldBeUniqueUntilProcessing
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -34,17 +35,24 @@ class Deploy implements ShouldQueue
      */
     public function handle()
     {
-        Redis::throttle('deployments' )
-            ->allow(10)
-            ->every(60)
-            ->block(10)
-            ->then(function (){
-                info('Started Deploying ...');
 
-                sleep(2);
+        info('Started Deploying ...');
 
-                info('Finished Deploying');
-            });
+        sleep(5);
+
+        info('Finished Deploying');
+//
+//        Redis::throttle('deployments' )
+//            ->allow(10)
+//            ->every(60)
+//            ->block(10)
+//            ->then(function (){
+//                info('Started Deploying ...');
+//
+//                sleep(2);
+//
+//                info('Finished Deploying');
+//            });
 //        Cache::lock('deployments')->block( 10, function (){
 //            info('Started Deploying ...');
 //
@@ -56,10 +64,19 @@ class Deploy implements ShouldQueue
 
 
     }
+
+    public function uniqueId(){
+        return 'deployments';
+    }
+
+    public function uniqueFor(){
+        return 60;
+    }
+
     public function middleware(){
 
         return [
-          new WithoutOverlapping('deployments', 10)
+         // new WithoutOverlapping('deployments', 10)
         ];
 
     }
